@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>Basemaps with Different Projections</title>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css" />
+  <style>
+    html,
+    body {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+    #header {
+      height: 60px;
+      background-color: #f0f0f0;
+      padding: 10px;
+    }
+    #mapView {
+      height: calc(100% - 120px); /* Adjust the height based on your layout */
+    }
+    #basemapGallery {
+      height: 60px;
+      padding: 10px;
+      background-color: #f0f0f0;
+    }
+  </style>
+
+</head>
+<body>
+  <header id="header"> <!-- 页眉区域 -->
+  <h1>3215706034 苏枫</h1> 
+    <!-- Add any content you want for the header -->
+  </header>
+  <div id="mapView"> <!-- 地图区域 -->
+  </div>
+  <div id="basemapGallery"> <!-- 底图库区域 -->
+    <!-- Add any content you want for the basemap gallery area -->
+  </div>
+
+  <script src="https://js.arcgis.com/4.29/"></script>
+
+  <script>
+require([
+  "esri/Map",
+  "esri/views/MapView",
+  "esri/widgets/BasemapGallery",
+  "esri/widgets/BasemapGallery/support/PortalBasemapsSource",
+  "esri/widgets/ScaleBar",
+  "esri/widgets/Legend",
+  "esri/widgets/Search",
+  "esri/widgets/LayerList",
+  "esri/layers/FeatureLayer"
+], function(
+  Map,
+  MapView,
+  BasemapGallery,
+  PortalBasemapsSource,
+  ScaleBar,
+  Legend,
+  Search,
+  LayerList,
+  FeatureLayer
+) {
+
+  var fLayer = new FeatureLayer({
+    url:"https://www.geosceneonline.cn/server/rest/services/Hosted/新型冠状病毒疫情全球病例统计new/FeatureServer"
+    //url:"https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Landscape_Trees/FeatureServer/0"
+  });
+  var Slayer = new FeatureLayer({
+    url:"https://www.geosceneonline.cn/server/rest/services/Hosted/全球各国家疫情信息/FeatureServer"
+  });
+  // Create a map object
+  var map1 = new Map({
+    basemap: "streets-vector" // Initial basemap
+  });
+
+  // Create a map view
+  var view = new MapView({
+    container: "mapView", // ID of the HTML element
+    map: map1,
+    center: [115.762, 42.052],
+    zoom: 3
+
+  });
+
+  // Create a basemap gallery widget
+  var basemapGallery = new BasemapGallery({
+    view: view
+  });
+
+  // Create a basemap source
+  var basemapSource = new PortalBasemapsSource({
+        query: {
+          id: "bdb9d65e0b5c480c8dcc6916e7f4e099"
+        }
+  });
+
+  // Set the source of the basemap gallery widget
+  basemapGallery.source = basemapSource;
+
+  // Create a scale bar widget
+  var scaleBar = new ScaleBar({
+    view: view
+  });
+
+  // Create a legend widget
+  var legend = new Legend({
+    view: view
+  });
+
+  // Create a search widget
+  var search = new Search({
+    view: view
+  });
+
+  // Create a layer list widget
+  var layerList = new LayerList({
+    view: view
+  });
+
+
+
+  // Add the widgets to the view
+  // Add the feature layer to the layer list
+  view.ui.add(scaleBar, "bottom-left");
+  view.ui.add(legend, "bottom-right");
+  view.ui.add(search, "top-right");
+  view.ui.add(layerList, "top-right");
+
+  // Add the basemap gallery to the basemapGallery div
+  basemapGallery.container = "basemapGallery";
+  map1.layers.add(Slayer,1);
+  map1.layers.add(fLayer,0);
+});
+
+  </script>
+</body>
+</html>
